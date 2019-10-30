@@ -12,7 +12,7 @@ def to_csv(path):
         'output': []
     }
     cur = 'input'
-    with open(path, encoding='utf-32') as f:
+    with open(path, encoding='ISO-8859-1') as f:
         for line in f:
             if line == '\n':
                 cur = 'input'
@@ -22,9 +22,9 @@ def to_csv(path):
                 cur = 'output'
 
     df = pd.DataFrame(data)
-    df.to_csv(path_or_buf=os.path.join(os.getcwd(), 'data', 'smallest.csv'), index=False, encoding='utf-32')
+    df.to_csv(path_or_buf=os.path.join(os.getcwd(), 'data', 'smaller.csv'), index=False, encoding='utf-8')
 
 
 if __name__ == '__main__':
-    p = os.path.join(os.getcwd(), 'data', 'smallest.txt')
+    p = os.path.join(os.getcwd(), 'data', 'smaller.txt')
     to_csv(p)
