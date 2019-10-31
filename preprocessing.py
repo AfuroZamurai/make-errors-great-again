@@ -25,6 +25,18 @@ def to_csv(path):
     df.to_csv(path_or_buf=os.path.join(os.getcwd(), 'data', 'smaller.csv'), index=False, encoding='utf-8')
 
 
+def get_charwise_encoder_input():
+    return
+
+
+def get_charwise_decoder_input():
+    return
+
+
+def get_charwise_decoder_target():
+    return
+
+
 if __name__ == '__main__':
     p = os.path.join(os.getcwd(), 'data', 'smaller.txt')
     to_csv(p)
