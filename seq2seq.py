@@ -21,18 +21,18 @@ def build_model(parameter):
     decoder_outputs = decoder_dense(decoder_outputs)
 
     # model
-    model = Model([encoder_inputs, encoder_outputs], decoder_outputs)
+    model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 
     return model
 
 
 if __name__ == '__main__':
     p = {
-        'max_len_in': 100,
-        'max_len_out': 120,
-        'encoding_dim': 300,
-        'decoding_dim': 300,
-        'vocab_size': 100
+        'max_len_in': 70,
+        'max_len_out': 93,
+        'encoding_dim': 256,
+        'decoding_dim': 256,
+        'vocab_size': 93
     }
     model = build_model(p)
     model.summary()
