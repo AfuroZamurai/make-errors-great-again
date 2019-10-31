@@ -17,7 +17,7 @@ def build_model(parameters):
     decoder_inputs = Input(shape=(None, parameters['max_len_out']))
     decoder_lstm = LSTM(parameters['decoding_dim'], return_sequences=True, return_state=True)
     decoder_outputs, _, _ = decoder_lstm(decoder_inputs, initial_state=encoder_states)
-    decoder_dense = Dense(parameters['vocab_size'], activation='softmax')
+    decoder_dense = Dense(parameters['max_len_out'], activation='softmax')
     decoder_outputs = decoder_dense(decoder_outputs)
 
     # model

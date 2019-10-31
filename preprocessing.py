@@ -38,26 +38,6 @@ class Preprocessor:
                 if char not in self.target_characters:
                     self.target_characters.add(char)
 
-    def to_csv(self, path):
-        data = {
-            'input': [],
-            'output': []
-        }
-        cur = 'input'
-        with open(path, encoding='ISO-8859-1') as f:
-            for line in f:
-                if line == '\n':
-                    cur = 'input'
-                    continue
-                else:
-                    stripped = line.rstrip('\n')
-                    if stripped != '\n':
-                        data[cur].append(stripped)
-                    cur = 'output'
-
-        df = pd.DataFrame(data)
-        df.to_csv(path_or_buf=os.path.join(os.getcwd(), 'data', 'smaller.csv'), index=False, encoding='utf-8')
-
     def get_charwise_data(self):
         input_characters = sorted(list(self.input_characters))
         target_characters = sorted(list(self.target_characters))
@@ -106,7 +86,28 @@ class Preprocessor:
         return encoder_input_data, decoder_input_data, decoder_target_data
 
 
+def to_csv(path):
+    data = {
+        'input': [],
+        'output': []
+    }
+    cur = 'input'
+    with open(path, encoding='ISO-8859-1') as f:
+        for line in f:
+            if line == '\n':
+                cur = 'input'
+                continue
+            else:
+                stripped = line.rstrip('\n')
+                if stripped != '\n':
+                    data[cur].append(stripped)
+                cur = 'output'
+
+    df = pd.DataFrame(data)
+    save_path = os.path.join(os.getcwd(), 'data', 'smallest.csv')
+    df.to_csv(path_or_buf=save_path, index=False, encoding='utf-8')
+
+
 if __name__ == '__main__':
     p = os.path.join(os.getcwd(), 'data', 'smallest.txt')
-    processor = Preprocessor()
-    processor.to_csv(p)
+    to_csv(p)

@@ -17,11 +17,10 @@ if __name__ == '__main__':
     encoder_input_data, decoder_input_data, decoder_target_data = preprocessor.get_charwise_data()
 
     params = {
-        'max_len_in': 93,
-        'max_len_out': 78,
+        'max_len_in': 78,
+        'max_len_out': 79,
         'encoding_dim': 300,
-        'decoding_dim': 300,
-        'vocab_size': 100
+        'decoding_dim': 300
     }
     model = build_model(params)
     model.summary()
