@@ -103,5 +103,8 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# PyCharcm .idea
+# PyCharm .idea
 .idea/*
+
+# data
+data/*
