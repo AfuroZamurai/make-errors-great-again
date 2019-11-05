@@ -38,7 +38,7 @@ class Preprocessor:
                 if char not in self.target_characters:
                     self.target_characters.add(char)
 
-    def get_charwise_data(self):
+    def get_charwise_data(self, num_enc_tokens=None, num_dec_tokens=None):
         input_characters = sorted(list(self.input_characters))
         target_characters = sorted(list(self.target_characters))
         num_encoder_tokens = len(input_characters)
@@ -57,17 +57,29 @@ class Preprocessor:
         target_token_index = dict(
             [(char, i) for i, char in enumerate(target_characters)])
 
-        encoder_input_data = np.zeros(
-            (len(self.input_texts), max_encoder_seq_length, num_encoder_tokens),
-            dtype='float32')
+        if num_enc_tokens is None:
+            encoder_input_data = np.zeros(
+                (len(self.input_texts), max_encoder_seq_length, num_encoder_tokens),
+                dtype='float32')
 
-        decoder_input_data = np.zeros(
-            (len(self.input_texts), max_decoder_seq_length, num_decoder_tokens),
-            dtype='float32')
+            decoder_input_data = np.zeros(
+                (len(self.input_texts), max_decoder_seq_length, num_decoder_tokens),
+                dtype='float32')
 
-        decoder_target_data = np.zeros(
-            (len(self.input_texts), max_decoder_seq_length, num_decoder_tokens),
-            dtype='float32')
+            decoder_target_data = np.zeros(
+                (len(self.input_texts), max_decoder_seq_length, num_decoder_tokens),
+                dtype='float32')
+        else:
+            encoder_input_data = np.zeros((len(self.input_texts), max_decoder_seq_length,
+                                           num_enc_tokens), dtype='float32')
+
+            decoder_input_data = np.zeros((len(self.input_texts), max_decoder_seq_length,
+                                           num_dec_tokens),
+                                          dtype='float32')
+
+            decoder_target_data = np.zeros((len(self.input_texts), max_decoder_seq_length,
+                                            num_dec_tokens),
+                                           dtype='float32')
 
         for i, (input_text, target_text) in enumerate(zip(self.input_texts, self.target_texts)):
             for t, char in enumerate(input_text):
@@ -86,7 +98,7 @@ class Preprocessor:
         return encoder_input_data, decoder_input_data, decoder_target_data
 
 
-def to_csv(path):
+def to_csv(path, name):
     data = {
         'input': [],
         'output': []
@@ -104,10 +116,11 @@ def to_csv(path):
                 cur = 'output'
 
     df = pd.DataFrame(data)
-    save_path = os.path.join(os.getcwd(), 'data', 'smallest.csv')
+    save_path = os.path.join(os.getcwd(), 'data', name.split('.')[0] + '.csv')
     df.to_csv(path_or_buf=save_path, index=False, encoding='utf-8')
 
 
 if __name__ == '__main__':
-    p = os.path.join(os.getcwd(), 'data', 'smallest.txt')
-    to_csv(p)
+    name = 'smaller.txt'
+    p = os.path.join(os.getcwd(), 'data', name)
+    to_csv(p, name)
