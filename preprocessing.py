@@ -103,17 +103,17 @@ def to_csv(path, name):
         'input': [],
         'output': []
     }
-    cur = 'input'
+    cur = 'output'
     with open(path, encoding='ISO-8859-1') as f:
         for line in f:
             if line == '\n':
-                cur = 'input'
+                cur = 'output'
                 continue
             else:
                 stripped = line.rstrip('\n')
                 if stripped != '\n':
                     data[cur].append(stripped)
-                cur = 'output'
+                cur = 'input'
 
     df = pd.DataFrame(data)
     save_path = os.path.join(os.getcwd(), 'data', name.split('.')[0] + '.csv')
