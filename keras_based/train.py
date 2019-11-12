@@ -5,8 +5,8 @@ import os
 
 from keras.models import load_model
 
-from seq2seq import build_model
-from preprocessing import Preprocessor
+from keras_based.seq2seq import build_model
+from keras_based.preprocessing import Preprocessor
 
 BATCH_SIZE = 32
 EPOCHS = 100

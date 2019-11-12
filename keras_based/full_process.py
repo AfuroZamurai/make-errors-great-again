@@ -2,13 +2,9 @@
 Complete code for the project(can be used in Colab) in one file for easier access to stuff
 """
 
-import os
-
 from keras.layers import Input, LSTM, Dense
 from keras.models import load_model, Model
 import numpy as np
-
-from seq2seq import build_model
 
 BATCH_SIZE = 32
 EPOCHS = 3
