@@ -105,3 +105,17 @@ venv.bak/
 
 # PyCharcm .idea
 .idea/*
+
+# OpenNMT-py preprocessing .pt files
+*.pt
+
+# keras models
+*.h5
+
+# data files
+*.txt
+*.csv
+*.pkl
+
+# test python file
+test.py
