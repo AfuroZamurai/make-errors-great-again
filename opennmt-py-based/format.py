@@ -8,7 +8,44 @@ import os
 import glob
 
 
-def format(data_path, save_path, valid_size, test_size):
+def transform_newspaper(data_path, save_path):
+    newspaper = []
+    with open(data_path, encoding='utf-8') as f:
+        for line in f:
+            newspaper.append(line)
+
+    for i, line in enumerate(newspaper):
+        newline = "\n".join([
+            " ".join([c if c != " " else "<s>" for c in line])
+        ])
+        newspaper[i] = newline.rstrip() + '\n'
+
+    with open(os.path.join(save_path, 'newspaper_clean_charwise.txt'), mode='w', encoding='utf-8') as f:
+        for i in range(0, len(newspaper)):
+            if i == len(newspaper) - 1:
+                f.write(newspaper[i].rstrip())
+            else:
+                f.write(newspaper[i])
+
+
+def reformat(data_path, save_path):
+    translations = []
+    with open(data_path, encoding='utf-8') as f:
+        for line in f:
+            translations.append(line)
+
+    detokenized = []
+    for sentence in translations:
+        desplit = sentence.replace(' ', '')
+        final = desplit.replace('<s>', ' ')
+        detokenized.append(final)
+
+    with open(save_path, mode='w', encoding='utf-8') as f:
+        for sentence in detokenized:
+            f.write(sentence)
+
+
+def format(data_path, save_path, valid_size, test_size, charwise=False):
     files = glob.glob(data_path)
 
     source = []
@@ -23,6 +60,19 @@ def format(data_path, save_path, valid_size, test_size):
                 elif i % 3 == 1:
                     target.append(line)
                 i += 1
+
+    if charwise:
+        for i, line in enumerate(source):
+            newline = "\n".join([
+                " ".join([c if c != " " else "<s>" for c in line])
+            ])
+            source[i] = newline.rstrip() + '\n'
+
+        for i, line in enumerate(target):
+            newline = "\n".join([
+                " ".join([c if c != " " else "<s>" for c in line])
+            ])
+            target[i] = newline.rstrip() + '\n'
 
     print(len(source))
     print(len(target))
@@ -74,4 +124,7 @@ def format(data_path, save_path, valid_size, test_size):
 
 
 if __name__ == '__main__':
-    format('../data/AI_lab_data/*.txt', os.path.join(os.getcwd(), '../', 'data'), valid_size=5000, test_size=31276)
+    reformat('../data/results/newspaper_output_charwise.txt', '../data/results/detokenized_newspaper.txt')
+    #format('../data/AI_lab_data/*.txt', os.path.join(os.getcwd(), '../', 'data'),
+     #      valid_size=5000, test_size=31276, charwise=False)
+    #transform_newspaper('../data/newspaper/newspaper_clean.txt', '../data/newspaper')

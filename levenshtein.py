@@ -10,7 +10,7 @@ def compute_levenshtein(file1, file2):
     count_equals = 0
     for s1, s2 in zip(file1, file2):
         dist = distance(s1, s2)
-        if dist <= 25 and dist > 0:
+        if dist <= 15 and dist > 0:
             count += 1
             dist_sum += dist
             if dist < dist_min:
@@ -63,6 +63,18 @@ if __name__ == '__main__':
         for line in f.readlines():
             newspaper_error.append(line.rstrip())
 
+    print('Loading charwise error...')
+    charwise_error = []
+    with open('data/results/detokenized_test.txt', 'r', encoding='utf-8') as f:
+        for line in f.readlines():
+            charwise_error.append(line.rstrip())
+
+    print('Loading newspaper charwise error...')
+    charwise_newspaper_error = []
+    with open('data/results/detokenized_newspaper.txt', 'r', encoding='utf-8') as f:
+        for line in f.readlines():
+            charwise_newspaper_error.append(line.rstrip())
+
     # compute distance for ground truth
     print('Computing Levenshtein for test clean/test error...')
     compute_levenshtein(test_clean, test_error)
@@ -79,3 +91,14 @@ if __name__ == '__main__':
     print('Computing Levenshtein for newspaper clean/newspaper error...')
     compute_levenshtein(newspaper_clean, newspaper_error)
 
+    # compute distance for test error to charwise error
+    print('Computing Levenshtein for test error/ charwise error...')
+    compute_levenshtein(test_error, charwise_error)
+
+    # compute distance for test clean to charwise error
+    print('Computing Levenshtein for test clean/ charwise error...')
+    compute_levenshtein(test_clean, charwise_error)
+
+    # compute distance for newspaper translation to clean ground truth
+    print('Computing Levenshtein for newspaper clean/newspaper charwise error...')
+    compute_levenshtein(newspaper_clean, charwise_newspaper_error)

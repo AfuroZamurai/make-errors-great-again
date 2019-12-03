@@ -70,6 +70,7 @@ if __name__ == '__main__':
     print_intersection(train_clean_chars, train_error_chars, 'train chars intersection size:')
 
     newspaper_clean_chars = print_and_load_chars(newspaper_clean, 'newspaper clean chars size:')
+    print('chars: {0}'.format(newspaper_clean_chars))
     print_intersection(train_clean_chars, newspaper_clean_chars, 'train and newspaper chars intersection size:')
 
     test_clean_vocab = print_and_load_vocab(test_clean, 'test clean vocab size:')
