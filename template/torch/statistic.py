@@ -1,4 +1,4 @@
-import template.torch.wer as wer
+import wer as wer
 import codecs
 import nltk
 

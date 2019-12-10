@@ -16,9 +16,9 @@ import pickle
 import sys
 import os
 #sys.path.append('..')
-import template.torch.statistic as statistic
-import template.torch.nlc_preprocess as nlc_preprocess
-from template.torch.nlc_preprocess import get_tokenizer
+import statistic as statistic
+import nlc_preprocess as nlc_preprocess
+from nlc_preprocess import get_tokenizer
 import numpy as np
 import logging
 try:
@@ -29,8 +29,8 @@ except:
 import entmax
 from entmax import sparsemax
 from entmax.losses import SparsemaxLoss
-from template.torch.Model import Encoder, Attention, Decoder, Seq2Seq
-from template.torch.dataset import LoadData, CustomData, Corpus
+from Model import Encoder, Attention, Decoder, Seq2Seq
+from dataset import LoadData, CustomData, Corpus
 from argparse import ArgumentParser
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -116,8 +116,14 @@ class Train:
         epoch_loss = 0
         epoch_accu = 0
         iterator = iter(dataloader.DataLoader(train_data, batch_size=self.batch, num_workers=1, shuffle=True, pin_memory=True))  ## add pin_memory here to use GPU
-
+        step = 0
+        start_time = time.time()
         for batch in iterator:
+            step += 1
+            if step % 200 == 0:
+                end_time = time.time()
+                print('{0}/{1} steps in epoch done in {2:4f} seconds'.format(step, len(iterator), (end_time - start_time)))
+                start_time = time.time()
             #print('batch: ', batch[0].shape)
             #print('batch: ', i)
             src = batch[0].permute(1,0)  #batch second
@@ -146,6 +152,7 @@ class Train:
 
 
     def evaluate(self, valid_data):
+        print('Evaluating model...')
         ws = self.vocab.get(' ') #get white space
         self.model.eval()
         epoch_loss = 0
@@ -158,6 +165,8 @@ class Train:
         iterator = iter(dataloader.DataLoader(valid_data, batch_size=self.batch, num_workers=1, shuffle=True, pin_memory=True))  ## add pin_memory here to use GPU
         with torch.no_grad():
             for i, batch in enumerate(iterator):
+                if i % 100 == 0:
+                    print('Evaluated {0}/{1} samples'.format(i, len(iterator)))
                 src = batch[0].permute(1,0).to(self.device)
                 #src_length = batch[1].permute(1,0).to(self.device)
                 trg = batch[1].permute(1,0).to(self.device)
@@ -196,6 +205,7 @@ class Train:
         for epoch in range(self.epoch):
             start = time.time()
             #print('training numbers: ', len(train_iterator))
+            print('Starting epoch {0}'.format(epoch))
             
             train_loss, train_accuracy = self.train(train_data)
             valid_loss, valid_accuracy, valid_wer_ocr, valid_cer_ocr, valid_wer, valid_cer = self.evaluate(valid_data)
