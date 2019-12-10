@@ -165,13 +165,15 @@ class LoadData():
     def train_valid_split(self, ratio=0.2):
         print('split training and validation dataset.')
         index = int(len(self.data)*(1-ratio))
-        self.train = self.data[:index] 
-        self.valid = self.data[index:] 
+        random.shuffle(self.data)
+        #index = int(len(self.data) * ratio)
+        self.train = self.data[:index]
+        self.valid = self.data[index:]
         print('train: {}'.format(len(self.train)))
         print('valid: {}'.format(len(self.valid)))
         self.train = self.custom_data(self.train)
         self.valid = self.custom_data(self.valid)
-        #self.test = self.valid
+        self.test = self.valid
 
     def custom_data(self, instances):
         custom = CustomData(instances, self.max_length)
