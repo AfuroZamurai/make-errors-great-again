@@ -16,9 +16,9 @@ import pickle
 import sys
 import os
 #sys.path.append('..')
-import statistic
-import nlc_preprocess
-from nlc_preprocess import get_tokenizer
+import template.torch.statistic as statistic
+import template.torch.nlc_preprocess as nlc_preprocess
+from template.torch.nlc_preprocess import get_tokenizer
 import numpy as np
 import logging
 try:
@@ -29,8 +29,8 @@ except:
 import entmax
 from entmax import sparsemax
 from entmax.losses import SparsemaxLoss
-from Model import Encoder, Attention, Decoder, Seq2Seq
-from dataset import LoadData, CustomData, Corpus
+from template.torch.Model import Encoder, Attention, Decoder, Seq2Seq
+from template.torch.dataset import LoadData, CustomData, Corpus
 from argparse import ArgumentParser
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
