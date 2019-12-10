@@ -73,7 +73,10 @@ def create_vocab(data_path, vocab_path, tokenizer, max_vocab_size=20000):
         sentent_ocr = [pair[0] for pair in sentence_pair]
         sentence_truth = [pair[1] for pair in sentence_pair]
         for sent in sentence_truth+sentent_ocr:
-            sent = sent.decode('utf-8', 'ignore')     ## ascii convert to unicode
+            try:
+                sent = sent.decode('utf-8', 'ignore')     ## ascii convert to unicode
+            except AttributeError:
+                sent = sent
             tokens = tokenizer(sent)
             for w in tokens:
                 if w in vocab:
@@ -119,8 +122,15 @@ def data_to_token_ids(data_path, target_path, vocab_path, tokenizer):
         vocab_size = len(vocab)
         sentence_pair = get_data(path=data_path)
         for pair in sentence_pair:
-            ocr = sentence_to_token_ids(pair[0].decode('utf-8', 'ignore'), vocab, tokenizer)
-            clean = sentence_to_token_ids(pair[1].decode('utf-8', 'ignore'), vocab, tokenizer)
+            try:
+                ocr_sent = pair[0].decode('utf-8', 'ignore')
+                clean_sent = pair[1].decode('utf-8', 'ignore')
+            except AttributeError:
+                ocr_sent = pair[0]
+                clean_sent = pair[1]
+
+            ocr = sentence_to_token_ids(ocr_sent, vocab, tokenizer)
+            clean = sentence_to_token_ids(clean_sent, vocab, tokenizer)
             ocr = sentence_to_token_ids(pair[0], vocab, tokenizer)
             clean = sentence_to_token_ids(pair[1], vocab, tokenizer)
             sentence_pair_ids.append((ocr, clean))
