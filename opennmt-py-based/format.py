@@ -124,7 +124,7 @@ def format(data_path, save_path, valid_size, test_size, charwise=False):
 
 
 if __name__ == '__main__':
-    reformat('../data/results/newspaper_output_charwise.txt', '../data/results/detokenized_newspaper.txt')
+    reformat('../data/results/newspaper_output_charwise_big.txt', '../data/results/detokenized_newspaper_big.txt')
     #format('../data/AI_lab_data/*.txt', os.path.join(os.getcwd(), '../', 'data'),
      #      valid_size=5000, test_size=31276, charwise=False)
     #transform_newspaper('../data/newspaper/newspaper_clean.txt', '../data/newspaper')
