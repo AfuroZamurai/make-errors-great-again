@@ -14,8 +14,8 @@ import time
 import random
 import sys
 #sys.path.append('..')
-import code.torch.nlc_preprocess as nlc_preprocess
-from code.torch.nlc_preprocess import get_tokenizer
+import template.torch.nlc_preprocess as nlc_preprocess
+from template.torch.nlc_preprocess import get_tokenizer
 import numpy as np
 import logging
 from entmax import sparsemax

@@ -48,7 +48,7 @@ def get_cmd_args():
     parser.add_argument('-t', '--tokenizer', default='char', help='tokenizer')
     parser.add_argument('-d', '--dataset', help='[travel, century17]')
     parser.add_argument('-m', '--mode', help='train or test')
-    parser.add_argument('-dir', '--directory', default='/home/lyu/travelogues/OCR/')
+    parser.add_argument('-dir', '--directory')
     parser.add_argument('-enc_units', '--enc_units', type=int, default=256)
     parser.add_argument('-dec_units', '--dec_units', type=int, default=256)
     parser.add_argument('-emb', '--embedding_dim', type=int, default=128)
@@ -310,11 +310,11 @@ class Train:
 def main():
     args = get_cmd_args()
     
-    args.data_path = args.directory + 'PKL/GTdata/{}_train_clean.pickle'.format(args.dataset)
-    args.target_path = args.directory + 'PKL/GTdata/{}_clean_data_indexs.pickle'.format(args.dataset)
-    args.vocab_path = args.directory + 'PKL/GTdata/{}_clean_vocab.pickle'.format(args.dataset)
+    args.data_path = args.directory + 'PKL/{}_train_clean.pickle'.format(args.dataset)
+    args.target_path = args.directory + 'PKL/{}_clean_data_indexs.pickle'.format(args.dataset)
+    args.vocab_path = args.directory + 'PKL/{}_clean_vocab.pickle'.format(args.dataset)
     args.model_dir = args.directory + 'Model/char/torch/{}.model'.format(args.model_name)
-    log_file = args.directory + 'log/torch/' + args.model_name + '_debug.log'
+    log_file = args.directory + 'log/' + args.model_name + '_debug.log'
     logging.basicConfig(filename=log_file, filemode='w', level=logging.DEBUG)
 
     # test
