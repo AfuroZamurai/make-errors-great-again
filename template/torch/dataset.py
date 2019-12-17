@@ -120,6 +120,7 @@ class LoadData():
         self.vocab_reverse = vocab_reverse
         self.max_length = max_length
         self.data = [(x, y) for (x, y) in zip(data_x, data_y)]
+        self.custom = CustomData(self.data, self.max_length)
     
     
     def build_vocab_on_the_fly(self, train_corpus): #read training instances directly
@@ -164,16 +165,16 @@ class LoadData():
 
     def train_valid_split(self, ratio=0.2):
         print('split training and validation dataset.')
-        index = int(len(self.data)*(1-ratio))
-        random.shuffle(self.data)
-        #index = int(len(self.data) * ratio)
-        self.train = self.data[:index]
-        self.valid = self.data[index:]
+        #index = int(len(self.data)*(1-ratio))
+        #random.shuffle(self.data)
+        index = int(len(self.data) * ratio)
+        self.train = self.data[index:]
+        self.valid = self.data[:index]
         print('train: {}'.format(len(self.train)))
         print('valid: {}'.format(len(self.valid)))
         self.train = self.custom_data(self.train)
         self.valid = self.custom_data(self.valid)
-        self.test = self.valid
+        self.test = self.custom_data(self.valid)
 
     def custom_data(self, instances):
         custom = CustomData(instances, self.max_length)
