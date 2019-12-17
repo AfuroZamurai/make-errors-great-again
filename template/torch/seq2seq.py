@@ -295,11 +295,15 @@ class Train:
         #Data = Data.to(self.device)
         sent_ret = []
         start_time = time.time()
+        accum_time = 0
         for i, sent in enumerate(sentences):
-            if i % 1000 == 0:
+            if i % 1000 == 0 and i > 0:
                 end_time = time.time()
-                print('{0}/{1} sentences translated in {2:4f} seconds'.format(i, len(sentences),
-                                                                             (end_time - start_time)))
+                needed = (end_time - start_time)
+                accum_time += needed
+                remaining = (len(sentences) - i) * accum_time / i
+                print('{0}/{1} sentences translated in {2:.1f} seconds, {3:.2f} minutes remaining'.
+                      format(i, len(sentences), needed, (remaining / 60)))
                 start_time = time.time()
 
             sent_out = ''
