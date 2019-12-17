@@ -239,7 +239,7 @@ class Train:
     def test(self, Data, test, model_dir):
         self.load_model(model_dir)
         #loss, accuracy = self.evaluate(test_data)
-        self.translate(Data, test)
+        return self.translate(Data, test)
         #print('Evaluate loss: {}, accuracy: {}'.format(loss, accuracy))
 
     def test_in_batch(self, test_data, model_dir):
@@ -294,7 +294,14 @@ class Train:
         # char to index, dimension: [length, batch]
         #Data = Data.to(self.device)
         sent_ret = []
-        for sent in sentences:
+        start_time = time.time()
+        for i, sent in enumerate(sentences):
+            if i % 1000 == 0:
+                end_time = time.time()
+                print('{0}/{1} sentences translated in {2:4f} seconds'.format(i, len(sentences),
+                                                                             (end_time - start_time)))
+                start_time = time.time()
+
             sent_out = ''
             try:
                 encoder_input = nlc_preprocess.sentence_to_token_ids(sent, Data.vocab, get_tokenizer(Data.tokenizer))
@@ -331,8 +338,8 @@ class Train:
                 except AttributeError:
                     expected += v
 
-            print('Expected sentence: ', expected)
-            print('Predicted sentence: ', sent_out)
+            #print('Expected sentence: ', expected)
+            #print('Predicted sentence: ', sent_out)
             sent_ret.append((expected,sent_out))
         return sent_ret
 
@@ -391,21 +398,14 @@ def main():
 
     else:
         logging.info('start testing...')
-        #sent = 'Ich fage nicht'
-        sent_clean = 'Mohren plagen uns ohne aufhÃ¶rlich'
-        print(sent_clean)
-        sent_error ='Mohren plagen uns ohnaufhoÍ¤rlich'
-        #x,y = loaddata.valid.__getitem__(0)
-        sent_res = task.translate_sent(loaddata, sent_clean)
+        # sent_clean = 'Mohren plagen uns ohne aufhÃ¶rlich'
+        # sent_res = task.translate_sent(loaddata, sent_clean)
         sent_out = task.test(loaddata, loaddata.valid, args.model_dir)
-        #task.test_in_batch(loaddata.test, args.model_dir)
 
-        #with open(args.directory + 'log/' + args.model_name + '_output.txt') as f:
-         #   for sent_pair in sent_out:
-          #      f.write(sent_pair[0] + ',' + sent_pair[1] + '\n')
+        with open(args.directory + 'log/' + args.model_name + '_output.txt') as f:
+            for sent_pair in sent_out:
+                f.write(sent_pair[0] + ',' + sent_pair[1] + '\n')
 
-
-    
 
 if __name__ == '__main__':
     main()
