@@ -109,8 +109,9 @@ venv.bak/
 # OpenNMT-py preprocessing .pt files
 *.pt
 
-# keras models
+# model files
 *.h5
+*.model
 
 # data files
 *.txt
@@ -118,5 +119,6 @@ venv.bak/
 *.pkl
 *.pickle
 
-# test python file
+# test python files
 test.py
+template/PKL/travel.py

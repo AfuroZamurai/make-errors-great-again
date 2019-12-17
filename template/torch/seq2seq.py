@@ -402,7 +402,7 @@ def main():
         # sent_res = task.translate_sent(loaddata, sent_clean)
         sent_out = task.test(loaddata, loaddata.valid, args.model_dir)
 
-        with open(args.directory + 'log/' + args.model_name + '_output.txt') as f:
+        with open(args.directory + 'log/' + args.model_name + '_output.txt', 'w', encoding='utf-8') as f:
             for sent_pair in sent_out:
                 f.write(sent_pair[0] + ',' + sent_pair[1] + '\n')
 
