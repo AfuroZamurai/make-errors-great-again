@@ -103,8 +103,20 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# PyCharm .idea
+# PyCharcm .idea
 .idea/*
 
-# data
-data/*
+# OpenNMT-py preprocessing .pt files
+*.pt
+
+# keras models
+*.h5
+
+# data files
+*.txt
+*.csv
+*.pkl
+*.pickle
+
+# test python file
+test.py

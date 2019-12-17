@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+onmt_train -data data/ -save_model final_model -train_steps 200000 -batch_size 4096 -batch_type tokens -normalization tokens -optim adam -learning_rate 0.001 -max_grad_norm 0.0 -decay_method noam -warmup_steps 1000 -valid_steps 2000 -save_checkpoint_steps 4000
