@@ -290,31 +290,80 @@ class Train:
         #print('remove func id: ', arr_clean)
         return arr_clean
 
-    def translate(self, Data, sent):  #generate correction for sent
+    def translate(self, Data, sentences):  #generate correction for sent
         # char to index, dimension: [length, batch]
         #Data = Data.to(self.device)
+        sent_ret = []
+        for sent in sentences:
+            sent_out = ''
+            try:
+                encoder_input = nlc_preprocess.sentence_to_token_ids(sent, Data.vocab, get_tokenizer(Data.tokenizer))
+                encoder_input = torch.from_numpy(Data.custom.pad_data(encoder_input)).view(-1, 1).to(self.device) ## todo: fix padding
+            except (AttributeError, TypeError) as e:
+                encoder_input = torch.from_numpy(sent[0]).view(-1, 1).to(self.device)
+            # print('input: ', encoder_input)
+            decoder_input = np.zeros(shape=( self.max_length, 1), dtype=np.int64)
+            decoder_input[0, :] = nlc_preprocess.SOS_ID
+            decoder_input = torch.from_numpy(decoder_input).to(self.device)
+            #print('input shape: {}, output shape: {}'.format(encoder_input.shape, decoder_input.shape))
+            output = self.model(encoder_input, decoder_input, 0)  ## turn off teacher forcing
+            #_, output = torch.max(output, -1)
+            output = self.prob_to_index(output).tolist()
+            #print('output: ', output)
+            for i in output[1:]:
+                if i[0] == 2:
+                    break
+
+                v = Data.vocab_reverse[i[0]]
+                try:
+                    sent_out += v.decode('ISO-8859-1')
+                except AttributeError:
+                    sent_out += v
+
+            expected = ''
+            for i in sent[1][1:]:
+                if i == 2:
+                    break
+
+                v = Data.vocab_reverse[i]
+                try:
+                    expected += v.decode('ISO-8859-1')
+                except AttributeError:
+                    expected += v
+
+            print('Expected sentence: ', expected)
+            print('Predicted sentence: ', sent_out)
+            sent_ret.append((expected,sent_out))
+        return sent_ret
+
+    def translate_sent(self, Data, sent):
+        # char to index, dimension: [length, batch]
+        # Data = Data.to(self.device)
         sent_out = ''
         encoder_input = nlc_preprocess.sentence_to_token_ids(sent, Data.vocab, get_tokenizer(Data.tokenizer))
-        encoder_input = torch.from_numpy(Data.custom.pad_data(encoder_input)).view(-1, 1).to(self.device) ## todo: fix padding
-        #print('input: ', encoder_input)
-        decoder_input = np.zeros(shape=( self.max_length, 1), dtype=np.int64)
+        encoder_input = torch.from_numpy(Data.custom.pad_data(encoder_input)).view(-1, 1).to(
+            self.device)  ## todo: fix padding
+        # print('input: ', encoder_input)
+        decoder_input = np.zeros(shape=(self.max_length, 1), dtype=np.int64)
         decoder_input[0, :] = nlc_preprocess.SOS_ID
         decoder_input = torch.from_numpy(decoder_input).to(self.device)
-        #print('input shape: {}, output shape: {}'.format(encoder_input.shape, decoder_input.shape))
+        # print('input shape: {}, output shape: {}'.format(encoder_input.shape, decoder_input.shape))
         output = self.model(encoder_input, decoder_input, 0)  ## turn off teacher forcing
-        #_, output = torch.max(output, -1)
+        # _, output = torch.max(output, -1)
         output = self.prob_to_index(output).tolist()
-        #print('output: ', output)
+        # print('output: ', output)
         for i in output[1:]:
-            if i == 2:
+            if i[0] == 2:
                 break
-            
-            sent_out += Data.vocab_reverse[i].decode()
+
+            v = Data.vocab_reverse[i[0]]
+            try:
+                sent_out += v.decode('ISO-8859-1')
+            except AttributeError:
+                sent_out += v
 
         print('Correct sentence: ', sent_out)
         return sent_out
-
-
 
 
 def main():
@@ -343,9 +392,17 @@ def main():
     else:
         logging.info('start testing...')
         #sent = 'Ich fage nicht'
-        #task.test(loaddata, sent, args.model_dir)
-        task.test_in_batch(loaddata.test, args.model_dir)
+        sent_clean = 'Mohren plagen uns ohne aufhÃ¶rlich'
+        print(sent_clean)
+        sent_error ='Mohren plagen uns ohnaufhoÍ¤rlich'
+        #x,y = loaddata.valid.__getitem__(0)
+        sent_res = task.translate_sent(loaddata, sent_clean)
+        sent_out = task.test(loaddata, loaddata.valid, args.model_dir)
+        #task.test_in_batch(loaddata.test, args.model_dir)
 
+        #with open(args.directory + 'log/' + args.model_name + '_output.txt') as f:
+         #   for sent_pair in sent_out:
+          #      f.write(sent_pair[0] + ',' + sent_pair[1] + '\n')
 
 
     
