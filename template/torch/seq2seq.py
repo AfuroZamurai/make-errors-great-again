@@ -224,7 +224,7 @@ class Train:
             logging.info('\tTrain Loss: {} | Train Accuracy: {}'.format(train_loss, train_accuracy))
             logging.info('\tVal. Loss: {} |  Val Accuracy: {}'.format(valid_loss, valid_accuracy))
             logging.info('\tVal. WER_OCR: {} |  Val CER_OCR: {}'.format(valid_wer_ocr, valid_cer_ocr))
-            logging.info('\tVal. WER_After: {} |  Val CER_After: {}'.format(valid_wer, valid_cer))
+            logging.info('\tVal. WER_After: {} |  Val CER_After: {}\n'.format(valid_wer, valid_cer))
 
     def load_model(self, model_dir):
         print('loading model from ', model_dir)
@@ -406,7 +406,9 @@ def main():
         # sent_res = task.translate_sent(loaddata, sent_clean)
         sent_out = task.test(loaddata, loaddata.valid, args.model_dir)
 
-        with open(args.directory + 'log/' + args.model_name + '_output.txt', 'w', encoding='utf-8') as f:
+        output_file = args.directory + 'log/' + args.model_name + '_output.txt'
+        print('Saving to {0}\n'.format(output_file))
+        with open(output_file, 'w', encoding='utf-8') as f:
             for sent_pair in sent_out:
                 f.write(sent_pair[0] + ',' + sent_pair[1] + '\n')
 
