@@ -118,6 +118,7 @@ venv.bak/
 *.csv
 *.pkl
 *.pickle
+*.png
 
 # test python files
 test.py
