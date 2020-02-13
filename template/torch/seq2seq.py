@@ -208,9 +208,9 @@ class Train:
             'train_acc': [],
             'val_loss': [],
             'val_acc': [],
-            'wer_ocr': 0.0,
+            'wer_ocr': [],
             'wer_after': [],
-            'cer_ocr': 0.0,
+            'cer_ocr': [],
             'cer_after': []
         }
         best_valid_loss = float('inf')
@@ -231,9 +231,9 @@ class Train:
             results['train_acc'].append(train_loss)
             results['val_loss'].append(train_loss)
             results['val_acc'].append(train_loss)
-            results['wer_ocr'] = train_loss
+            results['wer_ocr'].append(valid_wer_ocr)
             results['wer_after'].append(valid_wer)
-            results['cer_ocr'] = train_loss
+            results['cer_ocr'].append(valid_cer_ocr)
             results['cer_after'].append(valid_cer)
 
             print('Epoch: {}  | Time: {} m'.format(epoch+1, mins))
@@ -429,7 +429,7 @@ def main():
 
         extension = '_' + str(args.model_name)
 
-        save_path = args.directory + './results/'
+        save_path = args.directory + 'results/'
 
         # plot accuracy
         plot('accuracy' + extension, 'epochs', 'accuracy', results['train_acc'], results['val_acc'],
