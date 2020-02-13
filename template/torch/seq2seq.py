@@ -423,7 +423,7 @@ def main():
         logging.info('start training...')
         results = task.start_train(loaddata.train, loaddata.valid, args.model_dir)
 
-        for k, v in results.values():
+        for k, v in results.items():
             print('{0}: {1}'.format(k, v))
             logging.info('{0}: {1}'.format(k, v))
 
