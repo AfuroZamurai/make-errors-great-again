@@ -211,7 +211,7 @@ class Train:
             'wer_ocr': 0.0,
             'wer_after': [],
             'cer_ocr': 0.0,
-            'cer_after': [],
+            'cer_after': []
         }
         best_valid_loss = float('inf')
         for epoch in range(self.epoch):
@@ -226,6 +226,16 @@ class Train:
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
                 torch.save(self.model.state_dict(), model_dir)
+
+            results['train_loss'].append(train_loss)
+            results['train_acc'].append(train_loss)
+            results['val_loss'].append(train_loss)
+            results['val_acc'].append(train_loss)
+            results['wer_ocr'] = train_loss
+            results['wer_after'].append(valid_wer)
+            results['cer_ocr'] = train_loss
+            results['cer_after'].append(valid_cer)
+
             print('Epoch: {}  | Time: {} m'.format(epoch+1, mins))
             print('\tTrain Loss: {} | Train Accuracy: {}'.format(train_loss, train_accuracy))
             print('\tVal. Loss: {} |  Val Accuracy: {}'.format(valid_loss, valid_accuracy))
@@ -415,6 +425,7 @@ def main():
 
         for k, v in results.values():
             print('{0}: {1}'.format(k, v))
+            logging.info('{0}: {1}'.format(k, v))
 
         extension = '_' + str(args.model_name)
 
