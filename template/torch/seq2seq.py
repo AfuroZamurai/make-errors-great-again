@@ -33,6 +33,8 @@ from Model import Encoder, Attention, Decoder, Seq2Seq
 from dataset import LoadData, CustomData, Corpus
 from argparse import ArgumentParser
 
+from plot import plot
+
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 ''' cuda multiprocessing'''
@@ -201,6 +203,16 @@ class Train:
 
 
     def start_train(self, train_data, valid_data, model_dir):
+        results = {
+            'train_loss': [],
+            'train_acc': [],
+            'val_loss': [],
+            'val_acc': [],
+            'wer_ocr': 0.0,
+            'wer_after': [],
+            'cer_ocr': 0.0,
+            'cer_after': [],
+        }
         best_valid_loss = float('inf')
         for epoch in range(self.epoch):
             start = time.time()
@@ -225,6 +237,8 @@ class Train:
             logging.info('\tVal. Loss: {} |  Val Accuracy: {}'.format(valid_loss, valid_accuracy))
             logging.info('\tVal. WER_OCR: {} |  Val CER_OCR: {}'.format(valid_wer_ocr, valid_cer_ocr))
             logging.info('\tVal. WER_After: {} |  Val CER_After: {}\n'.format(valid_wer, valid_cer))
+
+        return results
 
     def load_model(self, model_dir):
         print('loading model from ', model_dir)
@@ -395,10 +409,32 @@ def main():
     args.vocab = loaddata.vocab
     task = Train(args.inp_dim, args.out_dim, args.embedding_dim, args.enc_units, args.dec_units, args.dropout, args.dropout, args.epoch, args.clip, args.sparse_max, args.tf, args.max_len, args.vocab, args.batch, device)
 
-
     if args.mode == 'train':
         logging.info('start training...')
-        task.start_train(loaddata.train, loaddata.valid, args.model_dir)
+        results = task.start_train(loaddata.train, loaddata.valid, args.model_dir)
+
+        for k, v in results.values():
+            print('{0}: {1}'.format(k, v))
+
+        extension = '_' + str(args.model_name)
+
+        save_path = args.directory + './results/'
+
+        # plot accuracy
+        plot('accuracy' + extension, 'epochs', 'accuracy', results['train_acc'], results['val_acc'],
+             'train accuracy', 'validation accuracy', save_path=save_path)
+
+        # plot loss
+        plot('loss' + extension, 'epochs', 'loss', results['train_loss'], results['val_loss'],
+             'train loss', 'validation loss', save_path=save_path)
+
+        # plot wer
+        plot('wer' + extension, 'epochs', 'wer', results['wer_ocr'], results['wer_after'],
+             'wer ocr', 'val wer', save_path=save_path)
+
+        # plot cer
+        plot('cer' + extension, 'epochs', 'cer', results['cer_ocr'], results['cer_after'],
+             'cer ocr', 'val cer', save_path=save_path)
 
     else:
         logging.info('start testing...')
