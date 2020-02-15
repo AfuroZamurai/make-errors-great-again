@@ -228,9 +228,9 @@ class Train:
                 torch.save(self.model.state_dict(), model_dir)
 
             results['train_loss'].append(train_loss)
-            results['train_acc'].append(train_loss)
-            results['val_loss'].append(train_loss)
-            results['val_acc'].append(train_loss)
+            results['train_acc'].append(train_accuracy)
+            results['val_loss'].append(valid_loss)
+            results['val_acc'].append(valid_accuracy)
             results['wer_ocr'].append(valid_wer_ocr)
             results['wer_after'].append(valid_wer)
             results['cer_ocr'].append(valid_cer_ocr)
